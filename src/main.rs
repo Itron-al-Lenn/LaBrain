@@ -1,10 +1,9 @@
 use clap::{Args, Parser};
 use run::{adder, getter, lister};
 
-mod db;
-mod notes;
 mod run;
 mod traits;
+mod types;
 
 #[derive(Parser)]
 enum Cli {

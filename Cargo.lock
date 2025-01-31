@@ -10,6 +10,7 @@ dependencies = [
  "directories",
  "id_derive",
  "rusqlite",
+ "thiserror",
 ]
 
 [[package]]

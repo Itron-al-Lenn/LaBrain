@@ -1,4 +1,4 @@
-use super::{SqlResult, DB};
+use super::{LaResult, DB};
 
 #[derive(Debug, Clone, Copy)]
 pub(super) enum Table {
@@ -51,7 +51,7 @@ impl Table {
     }
 
     /// Creates the table in the database if it doesn't exist
-    pub fn create(&self, db: &DB) -> SqlResult<()> {
+    pub fn create(&self, db: &DB) -> LaResult<()> {
         let command = format!(
             "CREATE TABLE IF NOT EXISTS {} {}",
             &self.name(),
@@ -60,6 +60,25 @@ impl Table {
 
         db.connection.execute(&command, [])?;
 
+        Ok(())
+    }
+
+    /// Creates triggers for the table in the database if they don't already exist
+    pub fn create_triggers(&self, db: &DB) -> LaResult<()> {
+        if let Table::Notes = self {
+            db.connection
+                .execute("DROP TRIGGER IF EXISTS update_note_timestamp", [])?;
+            // db.connection.execute(
+            //     "CREATE TRIGGER update_note_timestamp
+            //      AFTER UPDATE ON notes
+            //      BEGIN
+            //         UPDATE notes
+            //         SET updated_at = DATETIME('now')
+            //         WHERE note_id = NEW.note_id;
+            //      END;",
+            //     [],
+            // )?;
+        }
         Ok(())
     }
 }
